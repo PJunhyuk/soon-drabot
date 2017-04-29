@@ -151,6 +151,7 @@ void loop() {
         irrecv_variable = irrecv_variable + 1;
         if (irrecv_variable > 1) {
           rotate_finished = 3;
+          irrecv_variable = 0;
           Serial.println("Going to Stage 3");
         }
         irrecv.resume(); // Receive the next value
@@ -158,7 +159,7 @@ void loop() {
       delay(10);
     } else if (rotate_finished == 3) {
       //  Attack!
-      setMotor(240, 255);
+      setMotor(238, 255);
       Serial.println(digitalRead(IN_line_finder));
       if (HIGH == digitalRead(IN_line_finder)) {
         line_finded = line_finded + 1;
@@ -173,39 +174,12 @@ void loop() {
       // Retreat
       setMotor(-200,-200);
       delay(500);
-      second_time = 1;
-      rotate_finished = 5;
-    } else if (rotate_finished == 5) {
-      line_finded = 0;
-      setMotor(-110, -130);
-      Serial.println(digitalRead(IN_line_finder));
-      if (HIGH == digitalRead(IN_line_finder)) {
-        line_finded = line_finded + 1;
-      } else {
-        line_finded = 0;
-      }
-      if (line_finded > 5) {
-        rotate_finished = 6;
-        Serial.println("Going to Stage 6");
-      }
-      delay(2000);
-      setMotor(220, 255);
-      Serial.println(digitalRead(IN_line_finder));
-      if (HIGH == digitalRead(IN_line_finder)) {
-        line_finded = line_finded + 1;
-      } else {
-        line_finded = 0;
-      }
-      if (line_finded > 5) {
-        rotate_finished = 6;
-        Serial.println("Going to Stage 6");
-      }
-      delay(1000);
-
-      setMotor(150, -150);
-      delay(100);
       setMotor(0, 0);
-      delay(100);
+      delay(5000);
+      
+      second_time = 1;
+      rotate_finished = 2;
+      Serial.println("Going to Stage 2");
     } else {
       // Follow the line
       if (HIGH == digitalRead(IN_line_finder)) {
