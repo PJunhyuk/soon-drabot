@@ -1,13 +1,23 @@
 clc
 clear all
 
-a = arduino('/dev/cu.usbmodem1411', 'Uno', 'Libraries', 'JRodrigoTech/HCSR04');
+a = arduino('/dev/cu.usbmodem1421', 'Uno', 'Libraries', 'JRodrigoTech/HCSR04');
 sensor = addon(a, 'JRodrigoTech/HCSR04', 'D8', 'D9');
 % trig, echo
 
-% ultrasonic_distance_list = zeros(1, 100); % Preallocation
-
 for time = 1:1:10000
+    if mod(time, 4) < 2
+        writePWMVoltage(a, 'D6', 5); % right - front
+        writePWMVoltage(a, 'D11', 5); % left - back
+        disp('front');
+    else
+        writePWMVoltage(a, 'D6', 0); % right - front
+        writePWMVoltage(a, 'D11', 0); % left - back
+%         writePWMVoltage(a, 'D10', 5); % left - front
+%         writePWMVoltage(a, 'D5', 5); % right - back
+        disp('back');
+    end
+
     ultrasonic_distance = 100 * readDistance(sensor); % Convert meter to centimeter
 
     if ultrasonic_distance == 51 % max == 51

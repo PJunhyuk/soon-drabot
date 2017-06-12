@@ -1,5 +1,5 @@
-const int trigPin = 9;
-const int echoPin = 8; 
+const int trigPin = 8;
+const int echoPin = 9; 
 
 void setup() {
   // put your setup code here, to run once:
@@ -24,21 +24,21 @@ void loop() {
   // of the ping to the reception of its echo off of an object.
   
   // ... this is the reading loop
-    long pulseDuration;
-    long distance;
-    int tries = 0;
-    do
-    {
-        duration = pulseIn( echoPin, HIGH, 50000);
-        distance = 0.034 * duration / 2;
-        if ( duration == 0 ) {
-            delay(100);
-            pinMode(echoPin, OUTPUT);
-            digitalWrite(echoPin, LOW);
-            delay(100);
-            pinMode(echoPin, INPUT);
-        }
-    } while (duration == 0 && ++tries < 3);
+  long pulseDuration;
+  long distance;
+  int tries = 0;
+  do
+  {
+      duration = pulseIn( echoPin, HIGH, 50000);
+      distance = 0.034 * duration / 2;
+      if ( duration == 0 ) {
+          delay(100);
+          pinMode(echoPin, OUTPUT);
+          digitalWrite(echoPin, LOW);
+          delay(100);
+          pinMode(echoPin, INPUT);
+      }
+  } while (duration == 0 && ++tries < 3);
   Serial.println(distance);
   delay(100);
 }

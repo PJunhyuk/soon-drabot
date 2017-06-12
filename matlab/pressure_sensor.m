@@ -1,3 +1,5 @@
+% https://learn.sparkfun.com/tutorials/force-sensitive-resistor-hookup-guide
+
 clc
 clear all
 

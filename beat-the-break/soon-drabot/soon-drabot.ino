@@ -7,8 +7,8 @@ int IN_motor_right_backward = 10;
 int IN_line_finder = 7;
 int RECV_PIN = 2;
 
-const int trigPin = 12;
-const int echoPin = 13;
+const int trigPin = 8;
+const int echoPin = 9;
 
 int WALL_THRESHOLD = 25;
 int WALL_NEAR_THRESHOLD = 13;

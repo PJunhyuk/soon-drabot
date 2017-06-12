@@ -1,5 +1,5 @@
-const int trigPin = 9;
-const int echoPin = 8;
+const int trigPin = 8;
+const int echoPin = 9;
 int period = 0;
 int minperiod = 0;
 int mindistance = 150;

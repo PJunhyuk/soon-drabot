@@ -15,8 +15,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  int motor_power_left = 100;
-  int motor_power_right = -100;
+  int motor_power_left = 255;
+  int motor_power_right = -255;
 
   if (motor_power_left > 0) {
     analogWrite(IN_motor_left_forward, motor_power_left);
