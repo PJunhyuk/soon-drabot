@@ -99,7 +99,7 @@ long getUltrasonicDistance() {
   do {
     period++;
     duration = pulseIn( echoPin, HIGH, 50000);
-    distance = 0.034 * duration / 2;
+    distance = 0.034 * duration / 2 * 4;
     if ( duration == 0 ) {
       delay(100);
       pinMode(echoPin, OUTPUT);
@@ -216,7 +216,8 @@ void loop() {
 //      setMotor(150, 177);
 //      setMotor(200, 236);
 //      setMotor(-255, -255);
-      setMotor(100, -118);
+//      setMotor(100, -118);
+      setMotor(150, -177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -232,11 +233,12 @@ void loop() {
         Serial.println("Going to Stage 1");
       }
 
-      rotated_time = rotated_time + 1;
+//      rotated_time = rotated_time + 1;
+
     } else if (stage_number == 1) {
       // Approach Wall
-      setMotor(100, 118);
-//      setMotor(150, 177);
+//      setMotor(100, 118);
+      setMotor(150, 177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -248,9 +250,9 @@ void loop() {
       }
       if (near_count >= 3) {
         
-//        stage_number = 2;
-//        Serial.println("Going to Stage 2");
-        quit_variable = 1;
+        stage_number = 2;
+        Serial.println("Going to Stage 2");
+//        quit_variable = 1;
       }
 
     
