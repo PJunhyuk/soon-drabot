@@ -1,4 +1,5 @@
 #include <IRremote.h>
+#include <IRremoteInt.h>
 
 int IN_motor_left_forward = 10;
 int IN_motor_left_backward = 11;
@@ -15,12 +16,17 @@ int line_finded_back = 0;
 int line_on_front = 0;
 int line_on_back = 0;
 
-int RECV_PIN = 2;
-IRrecv irrecv(RECV_PIN);
+#define RECEIVERS 4
+IRrecv *irrecvs[RECEIVERS];
 
 int WALL_THRESHOLD = 25;
-int WALL_NEAR_THRESHOLD = 7;
+int WALL_NEAR_THRESHOLD = 10;
 int way_count = 0;
+
+unsigned long prev_time;
+unsigned long curr_time;
+unsigned long prev_time_front;
+unsigned long curr_time_front;
 
 decode_results results;
 
@@ -37,12 +43,19 @@ void setup() {
 
   Serial.begin(9600);
 
-  irrecv.enableIRIn(); // Start the receiver
-
   digitalWrite(trigPin, LOW);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   
+  irrecvs[0] = new IRrecv(A0); // Receiver #0: pin A0
+  irrecvs[1] = new IRrecv(A3); // Receiver #1: pin A1
+  irrecvs[2] = new IRrecv(A4); // Receiver #2: pin A2
+  irrecvs[3] = new IRrecv(A5); // Receiver #3: pin A3
+//  irrecvs[4] = new IRrecv(A5); // Receiver #4: pin A4
+//  irrecvs[5] = new IRrecv(A5); // Receiver #5: pin A5
+
+  for (int i = 0; i < RECEIVERS; i++)
+    irrecvs[i]->enableIRIn();  
 }
 
 int line_finded = 0;
@@ -88,7 +101,7 @@ long getUltrasonicDistance() {
   do {
     period++;
     duration = pulseIn( echoPin, HIGH, 50000);
-    distance = 0.034 * duration / 2;
+    distance = 0.034 * duration / 2 * 4;
     if ( duration == 0 ) {
       delay(100);
       pinMode(echoPin, OUTPUT);
@@ -103,39 +116,83 @@ long getUltrasonicDistance() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if (HIGH == digitalRead(IN_line_finder_front)) {
-    line_finded_front = line_finded_front + 1;
-    if (line_finded_front == 2) {
-      line_on_front = 1;
+  if (stage_number == 3) {
+    if (HIGH == digitalRead(IN_line_finder_front)) {
+      line_finded_front = line_finded_front + 1;
+      if (line_finded_front == 4) {
+        line_on_front = 1;
+      }
+    } else {
+      line_finded_front = 0;
+      line_on_front = 0;
     }
-  } else {
-    line_finded_front = 0;
-    line_on_front = 0;
-  }
-
-  if (line_on_front == 1) {
-    Serial.println("LINE FRONT!");
-    setMotor(-255, -255);
-    delay(300);
-  }
-
-//////
-
-  if (HIGH == digitalRead(IN_line_finder_back)) {
-    line_finded_back = line_finded_back + 1;
-    if (line_finded_back == 2) {
-      line_on_back = 1;
+  
+    if (line_on_front != 1) {
+    } else {
+      Serial.println("LINE FRONT!");
+      setMotor(-255, -255);
+      delay(500);
+      line_finded_front = 0;
+      line_on_front = 0;
     }
+    
   } else {
-    line_finded_back = 0;
-    line_on_back = 0;
+    
+    if (HIGH == digitalRead(IN_line_finder_front)) {
+      line_finded_front = line_finded_front + 1;
+      if (line_finded_front == 3) {
+        line_on_front = 1;
+      }
+    } else {
+      line_finded_front = 0;
+      line_on_front = 0;
+    }
+  
+    if (line_on_front != 1) {
+    } else {
+      Serial.println("LINE FRONT!");
+      setMotor(-255, -255);
+      delay(500);
+      line_finded_front = 0;
+      line_on_front = 0;
+    }
+  
+  //////
+  
+    if (HIGH == digitalRead(IN_line_finder_back)) {
+      line_finded_back = line_finded_back + 1;
+      if (line_finded_back == 4) {
+        line_on_back = 1;
+      }
+    } else {
+      line_finded_back = 0;
+      line_on_back = 0;
+    }
+  
+    if (line_on_back != 1) {
+    } else {
+      Serial.println("LINE BACK!");
+      setMotor(255, 255);
+      delay(500);
+      line_finded_back = 0;
+      line_on_back = 0;
+    }
   }
 
-  if (line_on_back == 1) {
-    Serial.println("LINE BACK!");
-    setMotor(255, 255);
-    delay(300);
-  }
+
+////////
+
+//  delay(100);
+//
+//  for (int i = 0; i < RECEIVERS; i++) {
+//    if (irrecvs[i]->decode(&results)) {
+//      Serial.print("Receiver #");
+//      Serial.print(i);
+//      Serial.print(":");
+//      Serial.println(results.value, HEX);
+//      irrecvs[i]->resume();
+//    }
+//  }
 
 ////////
 
@@ -145,29 +202,31 @@ void loop() {
     delay(10000);
   } else {
     if (stage_number == 0) {
-//      setMotor(150, 177);
-      setMotor(-255, -255);
-//      setMotor(100, -118);
-//      delay(100);
-//      setMotor(0, 0);
-//      delay(100);
-//
-//      // Ultrasonic Sensor
-//      ultrasonic_distance = getUltrasonicDistance();
-//      Serial.println(ultrasonic_distance);
-//      if (ultrasonic_distance != 0 && ultrasonic_distance <= WALL_THRESHOLD) {
-//        way_count++;
-//      }
-//      if (way_count > 3) {
-//        stage_number = 1;
-//        Serial.println("Going to Stage 1");
-//      }
-//
+//      setMotor(200, 236);
+//      setMotor(-255, -255);
+      setMotor(100, -118);
+//      setMotor(150, -177);
+      delay(100);
+      setMotor(0, 0);
+      delay(100);
+
+      // Ultrasonic Sensor
+      ultrasonic_distance = getUltrasonicDistance();
+      Serial.println(ultrasonic_distance);
+      if (ultrasonic_distance != 0 && ultrasonic_distance <= WALL_THRESHOLD) {
+        way_count++;
+      }
+      if (way_count > 3) {
+        stage_number = 1;
+        Serial.println("Going to Stage 1");
+      }
+
 //      rotated_time = rotated_time + 1;
+
     } else if (stage_number == 1) {
       // Approach Wall
-      setMotor(100, 118);
-//      setMotor(150, 177);
+//      setMotor(100, 118);
+      setMotor(150, 177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -178,8 +237,10 @@ void loop() {
         near_count++;
       }
       if (near_count >= 3) {
+        
         stage_number = 2;
         Serial.println("Going to Stage 2");
+//        quit_variable = 1;
       }
 
     
@@ -190,6 +251,17 @@ void loop() {
       delay(100);
       setMotor(0, 0);
       delay(100);
+      
+      int i = 0;
+      
+      if (irrecvs[i]->decode(&results)) {
+        Serial.print("Receiver #");
+        Serial.print(i);
+        Serial.print(":");
+        Serial.println(results.value, HEX);
+        stage_number = 3;
+        irrecvs[i]->resume();
+      }
 
 //      if (irrecv.decode(&results)) {
 //        Serial.println(results.value, HEX);
@@ -204,37 +276,10 @@ void loop() {
 //      delay(10);
     } else if (stage_number == 3) {
       //  Attack!
-      setMotor(238, 255);
-      Serial.println(digitalRead(IN_line_finder_front));
-      if (HIGH == digitalRead(IN_line_finder_front)) {
-        line_finded = line_finded + 1;
-      } else {
-        line_finded = 0;
-      }
-      if (line_finded > 5) {
-        stage_number = 4;
-        Serial.println("Going to Stage 4");
-      }
-    } else if (stage_number == 4) {
-      // Retreat
-      setMotor(-200,-200);
-      delay(500);
-      setMotor(0, 0);
-      delay(5000);
+      setMotor(255, 255);
       
-      second_time = 1;
-      stage_number = 2;
-      Serial.println("Going to Stage 2");
-    } else {
-      // Follow the line
-      if (HIGH == digitalRead(IN_line_finder_front)) {
-        setMotor(230,255);
-      } else {
-        setMotor(0,255);
-      }
+    } else if (stage_number == 4) {
+
     }
-
-
-
   }
 }
