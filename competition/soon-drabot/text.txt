@@ -144,24 +144,24 @@ void loop() {
     }
   
     if (line_on_front != 1) {
-      prev_time_front = millis();
+//      prev_time_front = millis();
     } else {
-      curr_time_front = millis();
-      if (curr_time_front - prev_time_front < 1000) {
+//      curr_time_front = millis();
+//      if (curr_time_front - prev_time_front < 1000) {
         Serial.println("LINE FRONT!");
         setMotor(-255, -255);
-      } else {
+        delay(500);
+//      } else {
         line_finded_front = 0;
         line_on_front = 0;
-        stage_number = 2;
-      }
+//      }
     }
     
   } else {
     
     if (HIGH == digitalRead(IN_line_finder_front)) {
       line_finded_front = line_finded_front + 1;
-      if (line_finded_front == 4) {
+      if (line_finded_front == 3) {
         line_on_front = 1;
       }
     } else {
@@ -170,16 +170,17 @@ void loop() {
     }
   
     if (line_on_front != 1) {
-      prev_time_front = millis();
+//      prev_time_front = millis();
     } else {
-      curr_time_front = millis();
-      if (curr_time_front - prev_time_front < 1000) {
+//      curr_time_front = millis();
+//      if (curr_time_front - prev_time_front < 1000) {
         Serial.println("LINE FRONT!");
         setMotor(-255, -255);
-      } else {
+        delay(500);
+//      } else {
         line_finded_front = 0;
         line_on_front = 0;
-      }
+//      }
     }
   
   //////
@@ -224,17 +225,17 @@ void loop() {
 
 ////////
 
-  delay(100);
-
-  for (int i = 0; i < RECEIVERS; i++) {
-    if (irrecvs[i]->decode(&results)) {
-      Serial.print("Receiver #");
-      Serial.print(i);
-      Serial.print(":");
-      Serial.println(results.value, HEX);
-      irrecvs[i]->resume();
-    }
-  }
+//  delay(100);
+//
+//  for (int i = 0; i < RECEIVERS; i++) {
+//    if (irrecvs[i]->decode(&results)) {
+//      Serial.print("Receiver #");
+//      Serial.print(i);
+//      Serial.print(":");
+//      Serial.println(results.value, HEX);
+//      irrecvs[i]->resume();
+//    }
+//  }
 
 ////////
 
@@ -244,11 +245,10 @@ void loop() {
     delay(10000);
   } else {
     if (stage_number == 0) {
-//      setMotor(150, 177);
 //      setMotor(200, 236);
 //      setMotor(-255, -255);
-//      setMotor(100, -118);
-      setMotor(150, -177);
+      setMotor(100, -118);
+//      setMotor(150, -177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -294,6 +294,17 @@ void loop() {
       delay(100);
       setMotor(0, 0);
       delay(100);
+      
+      int i = 0;
+      
+      if (irrecvs[i]->decode(&results)) {
+        Serial.print("Receiver #");
+        Serial.print(i);
+        Serial.print(":");
+        Serial.println(results.value, HEX);
+        stage_number = 3;
+        irrecvs[i]->resume();
+      }
 
 //      if (irrecv.decode(&results)) {
 //        Serial.println(results.value, HEX);
