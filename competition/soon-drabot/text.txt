@@ -20,7 +20,7 @@ int line_on_back = 0;
 IRrecv *irrecvs[RECEIVERS];
 
 int WALL_THRESHOLD = 25;
-int WALL_NEAR_THRESHOLD = 7;
+int WALL_NEAR_THRESHOLD = 10;
 int way_count = 0;
 
 unsigned long prev_time;
@@ -29,6 +29,8 @@ unsigned long prev_time_front;
 unsigned long curr_time_front;
 
 decode_results results;
+
+IRsend irsend;
 
 void setup() {
   // put your setup code here, to run once:
@@ -116,21 +118,13 @@ long getUltrasonicDistance() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-//  if (HIGH == digitalRead(IN_line_finder_front)) {
-//    line_finded_front = line_finded_front + 1;
-//    if (line_finded_front == 2) {
-//      line_on_front = 1;
-//    }
-//  } else {
-//    line_finded_front = 0;
-//    line_on_front = 0;
-//  }
-//
-//  if (line_on_front == 1) {
-//    Serial.println("LINE FRONT!");
-//    setMotor(-255, -255);
-//    delay(500);
-//  }
+  for (int i = 0; i < 2; i++) {
+    irsend.sendNEC(0xA1, 8);
+    delay(40);
+  }
+
+  for (int i = 0; i < RECEIVERS; i++)
+    irrecvs[i]->enableIRIn();  
 
   if (stage_number == 3) {
     if (HIGH == digitalRead(IN_line_finder_front)) {
@@ -144,18 +138,34 @@ void loop() {
     }
   
     if (line_on_front != 1) {
-//      prev_time_front = millis();
     } else {
-//      curr_time_front = millis();
-//      if (curr_time_front - prev_time_front < 1000) {
-        Serial.println("LINE FRONT!");
-        setMotor(-255, -255);
-        delay(500);
-//      } else {
-        line_finded_front = 0;
-        line_on_front = 0;
-//      }
+      Serial.println("STAGE3 LINE FRONT!");
+      setMotor(-255, -255);
+      delay(500);
+      line_finded_front = 0;
+      line_on_front = 0;
+      stage_number = 2;
+      Serial.println("Going to Stage 2");
     }
+
+    // if (HIGH == digitalRead(IN_line_finder_back)) {
+    //   line_finded_back = line_finded_back + 1;
+    //   if (line_finded_back == 3) {
+    //     line_on_back = 1;
+    //   }
+    // } else {
+    //   line_finded_back = 0;
+    //   line_on_back = 0;
+    // }
+  
+    // if (line_on_back != 1) {
+    // } else {
+    //   Serial.println("STAGE3 LINE BACK!");
+    //   setMotor(255, 255);
+    //   delay(500);
+    //   line_finded_back = 0;
+    //   line_on_back = 0;
+    // }
     
   } else {
     
@@ -170,58 +180,36 @@ void loop() {
     }
   
     if (line_on_front != 1) {
-//      prev_time_front = millis();
     } else {
-//      curr_time_front = millis();
-//      if (curr_time_front - prev_time_front < 1000) {
-        Serial.println("LINE FRONT!");
-        setMotor(-255, -255);
-        delay(500);
-//      } else {
-        line_finded_front = 0;
-        line_on_front = 0;
-//      }
+      Serial.println("LINE FRONT!");
+      setMotor(-255, -255);
+      delay(500);
+      line_finded_front = 0;
+      line_on_front = 0;
     }
   
   //////
   
-    if (HIGH == digitalRead(IN_line_finder_back)) {
-      line_finded_back = line_finded_back + 1;
-      if (line_finded_back == 4) {
-        line_on_back = 1;
-      }
-    } else {
-      line_finded_back = 0;
-      line_on_back = 0;
-    }
+  //   if (HIGH == digitalRead(IN_line_finder_back)) {
+  //     line_finded_back = line_finded_back + 1;
+  //     if (line_finded_back == 3) {
+  //       line_on_back = 1;
+  //     }
+  //   } else {
+  //     line_finded_back = 0;
+  //     line_on_back = 0;
+  //   }
   
-    if (line_on_back != 1) {
-      prev_time = millis();
-    } else {
-      curr_time = millis();
-      if (curr_time - prev_time < 1000) {
-        Serial.println("LINE BACK!");
-        setMotor(255, 255);
-      } else {
-        line_finded_back = 0;
-        line_on_back = 0;
-      }
-    }
-  }
+  //   if (line_on_back != 1) {
+  //   } else {
+  //     Serial.println("LINE BACK!");
+  //     setMotor(255, 255);
+  //     delay(500);
+  //     line_finded_back = 0;
+  //     line_on_back = 0;
+  //   }
+   }
 
-
-////////
-
-//  if (irrecv.decode(&results)) {
-//    Serial.println(results.value, HEX);
-//    irrecv_variable = irrecv_variable + 1;
-//    if (irrecv_variable > 1) {
-//      irrecv_variable = 0;
-//      Serial.println("Going to Stage 3");
-//    }
-//    irrecv.resume(); // Receive the next value
-//  }
-//  delay(10);
 
 ////////
 
@@ -321,28 +309,8 @@ void loop() {
       //  Attack!
       setMotor(255, 255);
       
-      
-      
     } else if (stage_number == 4) {
-      // Retreat
-      setMotor(-200,-200);
-      delay(500);
-      setMotor(0, 0);
-      delay(5000);
-      
-      second_time = 1;
-      stage_number = 2;
-      Serial.println("Going to Stage 2");
-    } else {
-      // Follow the line
-      if (HIGH == digitalRead(IN_line_finder_front)) {
-        setMotor(230,255);
-      } else {
-        setMotor(0,255);
-      }
+
     }
-
-
-
   }
 }
