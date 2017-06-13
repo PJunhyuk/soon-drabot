@@ -30,6 +30,8 @@ unsigned long curr_time_front;
 
 decode_results results;
 
+IRsend irsend;
+
 void setup() {
   // put your setup code here, to run once:
 
