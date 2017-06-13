@@ -171,7 +171,7 @@ void loop() {
   
     if (HIGH == digitalRead(IN_line_finder_back)) {
       line_finded_back = line_finded_back + 1;
-      if (line_finded_back == 4) {
+      if (line_finded_back == 3) {
         line_on_back = 1;
       }
     } else {
