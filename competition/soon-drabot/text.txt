@@ -129,7 +129,7 @@ void loop() {
   if (stage_number == 3) {
     if (HIGH == digitalRead(IN_line_finder_front)) {
       line_finded_front = line_finded_front + 1;
-      if (line_finded_front == 4) {
+      if (line_finded_front == 1) {
         line_on_front = 1;
       }
     } else {
@@ -145,7 +145,7 @@ void loop() {
       line_finded_front = 0;
       line_on_front = 0;
       stage_number = 2;
-      Serial.println("Going to Stage 2");
+      Serial.println("goto stage 2");
     }
 
     // if (HIGH == digitalRead(IN_line_finder_back)) {
@@ -190,24 +190,24 @@ void loop() {
   
   //////
   
-  //   if (HIGH == digitalRead(IN_line_finder_back)) {
-  //     line_finded_back = line_finded_back + 1;
-  //     if (line_finded_back == 3) {
-  //       line_on_back = 1;
-  //     }
-  //   } else {
-  //     line_finded_back = 0;
-  //     line_on_back = 0;
-  //   }
-  
-  //   if (line_on_back != 1) {
-  //   } else {
-  //     Serial.println("LINE BACK!");
-  //     setMotor(255, 255);
-  //     delay(500);
-  //     line_finded_back = 0;
-  //     line_on_back = 0;
-  //   }
+//     if (HIGH == digitalRead(IN_line_finder_back)) {
+//       line_finded_back = line_finded_back + 1;
+//       if (line_finded_back == 3) {
+//         line_on_back = 1;
+//       }
+//     } else {
+//       line_finded_back = 0;
+//       line_on_back = 0;
+//     }
+//  
+//     if (line_on_back != 1) {
+//     } else {
+//       Serial.println("LINE BACK!");
+//       setMotor(255, 255);
+//       delay(500);
+//       line_finded_back = 0;
+//       line_on_back = 0;
+//     }
    }
 
 
@@ -235,8 +235,8 @@ void loop() {
     if (stage_number == 0) {
 //      setMotor(200, 236);
 //      setMotor(-255, -255);
-      setMotor(100, -118);
-//      setMotor(150, -177);
+//      setMotor(100, -118);
+      setMotor(150, -177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -278,7 +278,7 @@ void loop() {
     
     } else if (stage_number == 2) {
       // Find Block Direction using IR
-      setMotor(100, -118);
+      setMotor(150, -177);
       delay(100);
       setMotor(0, 0);
       delay(100);
@@ -307,7 +307,7 @@ void loop() {
 //      delay(10);
     } else if (stage_number == 3) {
       //  Attack!
-      setMotor(255, 255);
+      setMotor(200, 236);
       
     } else if (stage_number == 4) {
 
