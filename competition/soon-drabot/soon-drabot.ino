@@ -123,6 +123,9 @@ void loop() {
     delay(40);
   }
 
+  for (int i = 0; i < RECEIVERS; i++)
+    irrecvs[i]->enableIRIn();  
+
   if (stage_number == 3) {
     if (HIGH == digitalRead(IN_line_finder_front)) {
       line_finded_front = line_finded_front + 1;
