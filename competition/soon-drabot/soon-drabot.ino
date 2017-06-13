@@ -116,6 +116,11 @@ long getUltrasonicDistance() {
 void loop() {
   // put your main code here, to run repeatedly:
 
+  for (int i = 0; i < 2; i++) {
+    irsend.sendNEC(0xA1, 8);
+    delay(40);
+  }
+
   if (stage_number == 3) {
     if (HIGH == digitalRead(IN_line_finder_front)) {
       line_finded_front = line_finded_front + 1;
