@@ -25,6 +25,8 @@ int way_count = 0;
 
 unsigned long prev_time;
 unsigned long curr_time;
+unsigned long prev_time_front;
+unsigned long curr_time_front;
 
 decode_results results;
 
@@ -130,53 +132,82 @@ void loop() {
 //    delay(500);
 //  }
 
-//  if (HIGH == digitalRead(IN_line_finder_front)) {
-//    line_finded_front = line_finded_front + 1;
-//    if (line_finded_front == 4) {
-//      line_on_front = 1;
-//    }
-//  } else {
-//    line_finded_front = 0;
-//    line_on_front = 0;
-//  }
-//
-//  if (line_on_front != 1) {
-//    prev_time = millis();
-//  } else {
-//    curr_time = millis();
-//    if (curr_time - prev_time < 1000) {
-//      Serial.println("LINE FRONT!");
-//      setMotor(255, 255);
-//    } else {
-//      line_finded_ba = 0;
-//      line_on_back = 0;
-//    }
-//  }
+  if (stage_number == 3) {
+    if (HIGH == digitalRead(IN_line_finder_front)) {
+      line_finded_front = line_finded_front + 1;
+      if (line_finded_front == 4) {
+        line_on_front = 1;
+      }
+    } else {
+      line_finded_front = 0;
+      line_on_front = 0;
+    }
+  
+    if (line_on_front != 1) {
+      prev_time_front = millis();
+    } else {
+      curr_time_front = millis();
+      if (curr_time_front - prev_time_front < 1000) {
+        Serial.println("LINE FRONT!");
+        setMotor(-255, -255);
+      } else {
+        line_finded_front = 0;
+        line_on_front = 0;
+        stage_number = 2;
+      }
+    }
+    
+  } else {
+    
+    if (HIGH == digitalRead(IN_line_finder_front)) {
+      line_finded_front = line_finded_front + 1;
+      if (line_finded_front == 4) {
+        line_on_front = 1;
+      }
+    } else {
+      line_finded_front = 0;
+      line_on_front = 0;
+    }
+  
+    if (line_on_front != 1) {
+      prev_time_front = millis();
+    } else {
+      curr_time_front = millis();
+      if (curr_time_front - prev_time_front < 1000) {
+        Serial.println("LINE FRONT!");
+        setMotor(-255, -255);
+      } else {
+        line_finded_front = 0;
+        line_on_front = 0;
+      }
+    }
+  
+  //////
+  
+    if (HIGH == digitalRead(IN_line_finder_back)) {
+      line_finded_back = line_finded_back + 1;
+      if (line_finded_back == 4) {
+        line_on_back = 1;
+      }
+    } else {
+      line_finded_back = 0;
+      line_on_back = 0;
+    }
+  
+    if (line_on_back != 1) {
+      prev_time = millis();
+    } else {
+      curr_time = millis();
+      if (curr_time - prev_time < 1000) {
+        Serial.println("LINE BACK!");
+        setMotor(255, 255);
+      } else {
+        line_finded_back = 0;
+        line_on_back = 0;
+      }
+    }
+  }
 
-//////
-
-//  if (HIGH == digitalRead(IN_line_finder_back)) {
-//    line_finded_back = line_finded_back + 1;
-//    if (line_finded_back == 4) {
-//      line_on_back = 1;
-//    }
-//  } else {
-//    line_finded_back = 0;
-//    line_on_back = 0;
-//  }
-//
-//  if (line_on_back != 1) {
-//    prev_time = millis();
-//  } else {
-//    curr_time = millis();
-//    if (curr_time - prev_time < 1000) {
-//      Serial.println("LINE BACK!");
-//      setMotor(255, 255);
-//    } else {
-//      line_finded_back = 0;
-//      line_on_back = 0;
-//    }
-//  }
 
 ////////
 
@@ -277,17 +308,10 @@ void loop() {
 //      delay(10);
     } else if (stage_number == 3) {
       //  Attack!
-      setMotor(238, 255);
-      Serial.println(digitalRead(IN_line_finder_front));
-      if (HIGH == digitalRead(IN_line_finder_front)) {
-        line_finded = line_finded + 1;
-      } else {
-        line_finded = 0;
-      }
-      if (line_finded > 5) {
-        stage_number = 4;
-        Serial.println("Going to Stage 4");
-      }
+      setMotor(255, 255);
+      
+      
+      
     } else if (stage_number == 4) {
       // Retreat
       setMotor(-200,-200);
